@@ -11,22 +11,24 @@ namespace Unit02.Game
     /// </summary>
     public class Director
     {
-        List<Die> dice = new List<Die>();
+        List<Card> cards = new List<Card>();
         bool isPlaying = true;
-        int score = 0;
-        int totalScore = 0;
+        int totalScore = 300;
+        public string guess;
 
         /// <summary>
         /// Constructs a new instance of Director.
         /// </summary>
         public Director()
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 2; i++)
             {
-                Die die = new Die();
-                dice.Add(die);
+                Card card = new Card();
+                cards.Add(card);
             }
         }
+
+    
 
         /// <summary>
         /// Starts the game by running the main game loop.
@@ -46,9 +48,9 @@ namespace Unit02.Game
         /// </summary>
         public void GetInputs()
         {
-            Console.Write("Roll dice? [y/n] ");
-            string rollDice = Console.ReadLine();
-            isPlaying = (rollDice == "y");
+            Console.Write("Draw a Card? [y/n] ");
+            string drawCard = Console.ReadLine();
+            isPlaying = (drawCard == "y");
         }
 
         /// <summary>
@@ -61,13 +63,19 @@ namespace Unit02.Game
                 return;
             }
 
-            score = 0;
-            foreach (Die die in dice)
+            int score = 0;
+            foreach (Card card in cards)
             {
-                die.Roll();
-                score += die.points;
+                card.Draw();
+                Console.WriteLine(card.value);
+                if (score == 0)
+                {
+                    Console.WriteLine("Is the Next card Heigher or Lower? [h/l] ");
+                    guess = Console.ReadLine();
+                }
+                score += 1;    
+                
             }
-            totalScore += score;
         }
 
         /// <summary>
@@ -79,16 +87,26 @@ namespace Unit02.Game
             {
                 return;
             }
-
-            string values = "";
-            foreach (Die die in dice)
+            string final;
+            if (cards[0].value > cards[1].value)
             {
-                values += $"{die.value} ";
+                final = "l";
             }
-
-            Console.WriteLine($"You rolled: {values}");
+            else
+            {
+                final = "h";
+            }
+            
+            if (final == guess)
+            {
+                totalScore += 50;
+            }
+            else
+            {
+                totalScore -= 100;
+            }
             Console.WriteLine($"Your score is: {totalScore}\n");
-            isPlaying = (score > 0);
+            isPlaying = (totalScore > 0);
         }
     }
 }
